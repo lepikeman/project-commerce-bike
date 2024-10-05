@@ -1,6 +1,5 @@
 export class CreateProductDto {
-  task: string;
-  taskname: string;
+  product_name: string;
   factorynew: boolean
   description: string;
 }
