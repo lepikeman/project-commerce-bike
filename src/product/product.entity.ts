@@ -5,12 +5,12 @@ export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 255 })
   product_name: string;
 
   @Column()
   factorynew: boolean;
 
-  @Column()
+  @Column({ type: 'text' })
   description: string;
 }
