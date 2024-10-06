@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UsePipes } from "@nestjs/common";
 import { ProductService } from './product.service';
 import { Product } from "./product.entity";
-import { CreateProductDto } from "./dto/create-product.dto";
-import { UpdateProductDto } from "./dto/update-product.dto";
+import { CreateProductDto } from "./dto-products/create-product.dto";
+import { UpdateProductDto } from "./dto-products/update-product.dto";
+import { TrimPipe } from "../Utility/trimPipe";
 
 @Controller('products')
 export class ProductController {
@@ -19,6 +20,7 @@ export class ProductController {
     return this.productService.findAll();
   }
   @Post()
+  @UsePipes(TrimPipe)
   create(@Body() createProductDto: CreateProductDto){
     return this.productService.create(createProductDto);
   }
@@ -34,7 +36,8 @@ export class ProductController {
   }
 
   @Put('/update/:id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateProductDto: UpdateProductDto){
+  update(@Param('id', ParseIntPipe) id: number,
+         @Body() updateProductDto: UpdateProductDto){
     return this.productService.updateProduct(id, updateProductDto);
   }
 
