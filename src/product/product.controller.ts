@@ -3,7 +3,7 @@ import { ProductService } from './product.service';
 import { Product } from "./product.entity";
 import { CreateProductDto } from "./dto-products/create-product.dto";
 import { UpdateProductDto } from "./dto-products/update-product.dto";
-import { TrimPipe } from "../Utility/trimPipe";
+import { TrimPipe } from "../utility/trimPipe";
 
 @Controller('products')
 export class ProductController {

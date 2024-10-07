@@ -1,0 +1,30 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from "@nestjs/typeorm";
+import { Order } from "./order.entity";
+import { Repository } from "typeorm";
+import { Product } from "../product/product.entity";
+
+@Injectable()
+export class OrderService {
+  constructor(
+    @InjectRepository(Order)
+    private orderRepository: Repository<Order>,
+  ) {}
+
+  async findOrderWithDetails(userId: number): Promise<any> {
+    return this.orderRepository
+      .createQueryBuilder('order')
+ // Retrieves an order with user and product details using a query builder with joins and selects specific fields.
+      .leftJoinAndSelect('order.user', 'user')
+      .leftJoinAndSelect('order.product', 'product')
+      .select([
+        'order.id AS order_id',
+        'user.username AS username',
+        'product.description AS description',
+        'product.factoryNew AS factorynew',
+        'order.order_date',
+      ])
+      .where('order.user_id = :userId', {userId})
+      .getRawOne()
+  }
+}
