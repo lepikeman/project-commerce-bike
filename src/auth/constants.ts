@@ -1,3 +1,6 @@
+import { config } from "dotenv";
+config()
+
 export const jwtConstants = {
-  secret: 'oizec168adfFZ851fZpolZ161VE'
+  secret: process.env.ACCESS_TOKEN,
 }

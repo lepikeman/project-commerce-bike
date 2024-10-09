@@ -14,12 +14,12 @@ export class OrderService {
   async findOrderWithDetails(userId: number): Promise<any> {
     return this.orderRepository
       .createQueryBuilder('order')
- // Retrieves an order with user and product details using a query builder with joins and selects specific fields.
       .leftJoinAndSelect('order.user', 'user')
       .leftJoinAndSelect('order.product', 'product')
       .select([
         'order.id AS order_id',
         'user.username AS username',
+        'product.product_name AS product_name',
         'product.description AS description',
         'product.factoryNew AS factorynew',
         'order.order_date',
