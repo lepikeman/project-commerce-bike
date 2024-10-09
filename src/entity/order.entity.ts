@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "../user/user.entity";
-import { Product } from "../product/product.entity";
+import { User } from "./user.entity";
+import { Product } from "./product.entity";
 
 @Entity('tb_orders')
 export class Order {
@@ -23,4 +23,5 @@ export class Order {
   @ManyToOne(() => Product, (product) => product.orders)
   @JoinColumn({ name: 'product_id' })
   product: Product;
+
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from "typeorm";
-import { User } from "./user.entity";
+import { User } from "../entity/user.entity";
 import { CreateUserDto } from "./dto-users/create-user.dto";
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from "@nestjs/typeorm";
@@ -19,4 +19,11 @@ export class UsersService {
     return this.userRepository.findOne({ where: { username } });
   }
 
+  async findByEmail(email_user: string) {
+    return this.userRepository.findOne({
+      where: {
+        email_user,
+      }
+    })
+  }
 }

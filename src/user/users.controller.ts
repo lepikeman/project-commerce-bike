@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Request, UseGuards } from "@nestjs/common";
 import { CreateUserDto } from "./dto-users/create-user.dto";
 import { UsersService } from "./users.service";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from "../guards/auth.guard";
 import { OrderService } from "../order/order.service";
 
 @Controller('user')
@@ -27,4 +27,7 @@ export class UsersController {
     const userId = req.user.sub;
     return this.orderService.findOrderWithDetails(userId);
   }
+
+  //TODO : PUT METHOD
+  //TODO : DELETE METHOD
 }

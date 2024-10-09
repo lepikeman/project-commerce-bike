@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UsePipes } from "@nestjs/common";
 import { ProductService } from './product.service';
-import { Product } from "./product.entity";
+import { Product } from "../entity/product.entity";
 import { CreateProductDto } from "./dto-products/create-product.dto";
 import { UpdateProductDto } from "./dto-products/update-product.dto";
 import { TrimPipe } from "../utility/trimPipe";
