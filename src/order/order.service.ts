@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from "@nestjs/typeorm";
-import { Order } from "../entity/order.entity";
-import { Repository } from "typeorm";
-import { Product } from "../entity/product.entity";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Order } from '../entity/order.entity';
+import { Repository } from 'typeorm';
+import { Product } from '../entity/product.entity';
 
 @Injectable()
 export class OrderService {
@@ -24,7 +24,7 @@ export class OrderService {
         'product.factoryNew AS factorynew',
         'order.order_date',
       ])
-      .where('order.user_id = :userId', {userId})
-      .getRawOne()
+      .where('order.user_id = :userId', { userId })
+      .getRawMany();
   }
 }
