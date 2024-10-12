@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto-users/create-user.dto';
 import { UsersService } from './users.service';
 import { OrderService } from '../order/order.service';
@@ -24,14 +17,14 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('account')
-  getProfile(@Request() req: any) {
-    return req.user;
+  @Get('profile')
+  getProfile(@Req() req) {
+    return this.usersService.findOne(req.user.sub);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('order')
-  async getOrderWithDetails(@Request() req: any) {
+  getOrderWithDetails(@Req() req) {
     console.log(req.user.sub);
     const userId = req.user.sub;
     return this.orderService.findOrderWithDetails(userId);

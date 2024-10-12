@@ -20,11 +20,10 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('User not found');
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
+
     if (!isPasswordMatch)
       throw new UnauthorizedException('Incorrect credential');
-
-    // const payload = { sub: user.id, email: user.email_user };
-    // return this.generateUserTokens(payload);
+    
     return { id: user.id };
   }
 

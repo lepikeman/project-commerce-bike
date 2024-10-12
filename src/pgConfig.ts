@@ -11,5 +11,5 @@ export const pgConfig: PostgresConnectionOptions = {
   database: process.env.DB_NAME,
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
   synchronize: true,
-  logging: true,
+  logging: false,
 };

@@ -8,22 +8,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from '../guards/local-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  // @HttpCode(HttpStatus.OK)
-  // @Post('login')
-  // async login(@Body() loginUserDto: LoginUserDto) {
-  //   return await this.authService.validateUser(
-  //     loginUserDto.email_user,
-  //     loginUserDto.password,
-  //   );
-  // }
   @HttpCode(HttpStatus.OK)
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req) {
     const token = this.authService.login(req.user);

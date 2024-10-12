@@ -15,8 +15,15 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  findOne(id: number) {
-    return `This action returns #${id} user`;
+  async findOne(id: number) {
+    try {
+      return this.userRepository.findOne({
+        where: { id },
+        select: ['username', 'email_user', 'id'],
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   findByEmail(email_user: string) {

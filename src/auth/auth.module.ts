@@ -3,7 +3,6 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../user/users.module';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from '../strategy/jwt.strategy';
 import jwtConfig from '../config/jwt.config';
 import { ConfigModule } from '@nestjs/config';
@@ -17,11 +16,10 @@ import { LocalStrategy } from '../strategy/local.strategy';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    UsersModule,
-    PassportModule,
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(refreshTokenConfig),
+    UsersModule,
   ],
 
   providers: [

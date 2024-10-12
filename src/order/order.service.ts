@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from '../entity/order.entity';
 import { Repository } from 'typeorm';
-import { Product } from '../entity/product.entity';
 
 @Injectable()
 export class OrderService {
@@ -11,7 +10,8 @@ export class OrderService {
     private orderRepository: Repository<Order>,
   ) {}
 
-  async findOrderWithDetails(userId: number): Promise<any> {
+  async findOrderWithDetails(userId: number) {
+    console.log(userId);
     return this.orderRepository
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.user', 'user')
