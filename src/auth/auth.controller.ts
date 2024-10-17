@@ -21,7 +21,6 @@ export class AuthController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post('login')
   async login(@Request() req) {
-    console.log(req.user);
     const token = this.authService.login(req.user);
     return { id: req.user.id, token };
   }
