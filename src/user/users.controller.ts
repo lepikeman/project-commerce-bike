@@ -1,4 +1,19 @@
+<<<<<<< HEAD
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+=======
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
+>>>>>>> 3e0c7e6 (post CR)
 import { CreateUserDto } from './dto-users/create-user.dto';
 import { UsersService } from './users.service';
 import { OrderService } from '../order/order.service';
@@ -12,8 +27,17 @@ export class UsersController {
   ) {}
 
   @Post('register')
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.usersService.findByEmail(createUserDto.email_user);
+    if (user) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    }
+    return {
+      status: HttpStatus.CREATED,
+      message: 'User created successfully',
+      data: await this.usersService.create(createUserDto),
+    };
   }
 
   @UseGuards(JwtAuthGuard)

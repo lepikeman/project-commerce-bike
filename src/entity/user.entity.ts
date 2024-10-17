@@ -1,13 +1,5 @@
-import {
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from './order.entity';
-import * as bcrypt from 'bcrypt';
 
 @Entity('tb_users')
 export class User {
@@ -25,9 +17,4 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
-
-  @BeforeInsert()
-  async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
 }
