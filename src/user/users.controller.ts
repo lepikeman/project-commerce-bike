@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-=======
 import {
   Body,
   Controller,
@@ -13,7 +10,6 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
->>>>>>> 3e0c7e6 (post CR)
 import { CreateUserDto } from './dto-users/create-user.dto';
 import { UsersService } from './users.service';
 import { OrderService } from '../order/order.service';
