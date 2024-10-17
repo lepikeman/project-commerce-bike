@@ -27,7 +27,6 @@ export class UsersController {
   async create(@Body() createUserDto: CreateUserDto) {
     const user = await this.usersService.findByEmail(createUserDto.email_user);
     if (user) {
-      console.log('test commit github');
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
     return {
