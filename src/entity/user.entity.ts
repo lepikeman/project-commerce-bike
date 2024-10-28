@@ -1,33 +1,32 @@
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
+  DeleteDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Order } from './order.entity';
-import * as bcrypt from 'bcrypt';
 
 @Entity('tb_users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @Column()
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
+  hashedRefreshToken: string;
+
+  @Column({ unique: true })
   email_user: string;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
-
-  @BeforeInsert()
-  async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
 }

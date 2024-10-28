@@ -3,12 +3,15 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
   Put,
   Query,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from '../entity/product.entity';
@@ -23,30 +26,59 @@ export class ProductController {
   //Get all products (with optional filter)
   @Get()
   async findAll(@Query('factorynew') factorynew: string): Promise<Product[]> {
-    if (factorynew) {
-      return factorynew === 'true'
-        ? this.productService.findNew()
-        : this.productService.findOld();
+    try {
+      if (factorynew) {
+        return factorynew === 'true'
+          ? this.productService.findNew()
+          : this.productService.findOld();
+      }
+      return this.productService.findAll();
+    } catch (error) {
+      throw new HttpException('Cannot find product', HttpStatus.BAD_REQUEST);
     }
-    return this.productService.findAll();
   }
 
   @Post()
   @UsePipes(TrimPipe)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+    const product = this.productService.create(createProductDto);
+    if (!product) {
+      throw new HttpException('Error creating product', HttpStatus.BAD_REQUEST);
+    }
+    return {
+      status: HttpStatus.CREATED,
+      message: 'Product created',
+      data: product,
+    };
   }
 
   //get By ID
   @Get('/get:id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.productService.findOne(id);
+    const product = this.productService.findOne(id);
+    if (!product) {
+      throw new HttpException('Error finding product', HttpStatus.BAD_REQUEST);
+    }
+    return {
+      status: HttpStatus.OK,
+      message: 'Product with ID',
+      data: product,
+    };
   }
 
   //Delete : /products/delete/id
   @Delete('/delete/:id')
   delete(@Param('id', ParseIntPipe) id: number) {
-    return this.productService.delete(id);
+    const product = this.productService.delete(id);
+    if (!product) {
+      throw new HttpException('Error deleting product', HttpStatus.BAD_REQUEST);
+    }
+    return {
+      status: HttpStatus.OK,
+      message: 'Product with ID deleted successfully',
+      data: product,
+    };
   }
 
   @Put('/update/:id')
@@ -54,6 +86,14 @@ export class ProductController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductDto: UpdateProductDto,
   ) {
-    return this.productService.updateProduct(id, updateProductDto);
+    const product = this.productService.updateProduct(id, updateProductDto);
+    if (!product) {
+      throw new HttpException('Error updating product', HttpStatus.BAD_REQUEST);
+    }
+    return {
+      status: HttpStatus.OK,
+      message: 'Product with ID updated successfully',
+      data: product,
+    };
   }
 }
