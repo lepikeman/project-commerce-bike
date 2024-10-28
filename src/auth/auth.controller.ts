@@ -43,12 +43,23 @@ export class AuthController {
   }
 
   @UseGuards(RefreshAuthGuard)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post('refresh')
   refreshToken(@Req() req) {
-    return this.authService.refreshToken(req.user.id);
+    const refresh = this.authService.refreshToken(req.user.id);
+    if (!refresh) {
+      throw new HttpException('Token invalid', HttpStatus.UNAUTHORIZED);
+    }
+    return {
+      status: HttpStatus.OK,
+      message: 'Refresh token',
+      id: req.user.id,
+      data: refresh,
+    };
   }
 
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post('signout')
   async signOut(@Req() req) {
     if (!req.user) {

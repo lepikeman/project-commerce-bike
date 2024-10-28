@@ -23,8 +23,8 @@ export class UsersController {
     private orderService: OrderService,
   ) {}
 
-  @Post('register')
   @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Post('register')
   async create(@Body() createUserDto: CreateUserDto) {
     const user = await this.usersService.findByEmail(createUserDto.email_user);
     if (user) {
@@ -65,6 +65,9 @@ export class UsersController {
       data: await this.orderService.findOrderWithDetails(userId),
     };
   }
+
+  // @UseGuards(JwtAuthGuard)
+  // @Put('modify-user')
 
   //TODO : PUT METHOD
   //TODO : DELETE METHOD
