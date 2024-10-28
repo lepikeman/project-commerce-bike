@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Put,
   Req,
   UseGuards,
   UsePipes,
@@ -15,6 +16,7 @@ import { CreateUserDto } from './dto-users/create-user.dto';
 import { UsersService } from './users.service';
 import { OrderService } from '../order/order.service';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { UpdateUserDto } from './dto-users/update-user.dto';
 
 @Controller('user')
 export class UsersController {
@@ -47,7 +49,7 @@ export class UsersController {
     return {
       status: HttpStatus.OK,
       message: 'Profile found',
-      data: await this.usersService.findOne(req.user.id),
+      data: await this.usersService.findById(req.user.id),
     };
   }
 
@@ -66,8 +68,11 @@ export class UsersController {
     };
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Put('modify-user')
+  @UseGuards(JwtAuthGuard)
+  @Put('modify')
+  async updateProfile(@Req() req, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.updateProfile(req.user.id, updateUserDto);
+  }
 
   //TODO : PUT METHOD
   //TODO : DELETE METHOD

@@ -1,9 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Not, Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import { CreateUserDto } from './dto-users/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto-users/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -34,7 +41,7 @@ export class UsersService {
     }
   }
 
-  async findOne(id: number) {
+  async findById(id: number) {
     try {
       return this.userRepository.findOne({
         where: { id },
@@ -46,10 +53,127 @@ export class UsersService {
   }
 
   findByEmail(email_user: string) {
-    return this.userRepository.findOne({
+    const userEmail = this.userRepository.findOne({
       where: {
         email_user,
       },
     });
+    if (!userEmail) {
+      throw new HttpException('userEmail not found', HttpStatus.NOT_FOUND);
+    }
+    return userEmail;
+  }
+
+  async updateProfile(
+    userId: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<Partial<User>> {
+    console.log('Starting update profile for userId:', userId);
+    console.log('Received DTO:', updateUserDto);
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    console.log('Found user:', user);
+    if (!user) {
+      throw new BadRequestException('Utilisateur non trouvé');
+    }
+    try {
+      console.log('Comparing passwords');
+      console.log(
+        'Current password from request:',
+        updateUserDto.currentPassword,
+      );
+      console.log('Stored hashed password:', user.password);
+
+      const passwordValid = await bcrypt.compare(
+        updateUserDto.currentPassword,
+        user.password,
+      );
+
+      console.log('Password validation result:', passwordValid);
+
+      if (!passwordValid) {
+        throw new UnauthorizedException('Mot de passe incorrect');
+      }
+    } catch (error) {
+      console.error('Error during password validation:', error);
+      throw error;
+    }
+
+    let hasChanges = false;
+    const userToUpdate = new User();
+    userToUpdate.id = userId;
+
+    if (
+      updateUserDto.email_user &&
+      updateUserDto.email_user !== user.email_user
+    ) {
+      console.log('Checking email update:', updateUserDto.email_user);
+      const emailExists = await this.userRepository.findOne({
+        where: {
+          email_user: updateUserDto.email_user,
+          id: Not(userId),
+        },
+      });
+      if (emailExists) {
+        throw new BadRequestException('Cet email est déjà utilisé');
+      }
+      userToUpdate.email_user = updateUserDto.email_user;
+      hasChanges = true;
+      console.log('Email will be updated');
+    }
+
+    if (updateUserDto.username && updateUserDto.username !== user.username) {
+      console.log('Checking username update:', updateUserDto.username);
+      const usernameExists = await this.userRepository.findOne({
+        where: {
+          username: updateUserDto.username,
+          id: Not(userId),
+        },
+      });
+      if (usernameExists) {
+        throw new BadRequestException("Ce nom d'utilisateur est déjà utilisé");
+      }
+      userToUpdate.username = updateUserDto.username;
+      hasChanges = true;
+      console.log('Username will be updated');
+    }
+
+    if (updateUserDto.newPassword) {
+      console.log('Updating password');
+      const salt = await bcrypt.genSalt();
+      userToUpdate.password = await bcrypt.hash(
+        updateUserDto.newPassword,
+        salt,
+      );
+      hasChanges = true;
+      console.log('Password will be updated');
+    }
+
+    if (!hasChanges) {
+      console.log('No changes detected');
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    }
+
+    try {
+      console.log('Attempting to save changes');
+      const savedUser = await this.userRepository.save(userToUpdate);
+      console.log('Save successful:', savedUser);
+
+      const updatedUser = await this.userRepository.findOne({
+        where: { id: userId },
+      });
+      console.log('Final updated user:', updatedUser);
+
+      const { password, ...userWithoutPassword } = updatedUser;
+      return userWithoutPassword;
+    } catch (error) {
+      console.error('Error during save/update:', error);
+      throw new BadRequestException(
+        'Erreur lors de la mise à jour: ' + error.message,
+      );
+    }
   }
 }

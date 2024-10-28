@@ -6,7 +6,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @Column()
@@ -15,7 +15,7 @@ export class User {
   @Column({ nullable: true })
   hashedRefreshToken: string;
 
-  @Column()
+  @Column({ unique: true })
   email_user: string;
 
   @OneToMany(() => Order, (order) => order.user)

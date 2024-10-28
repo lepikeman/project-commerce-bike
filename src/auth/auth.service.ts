@@ -66,12 +66,12 @@ export class AuthService {
   }
 
   async validateToken(userId: number, token: string) {
-    const user = this.usersService.findOne(userId);
+    const user = this.usersService.findById(userId);
     if (!user || !token) throw new UnauthorizedException('Invalid token');
   }
 
   async validateRefreshToken(userId: number, refreshToken: string) {
-    const user = this.usersService.findOne(userId);
+    const user = this.usersService.findById(userId);
     if (!user || !(await user).hashedRefreshToken)
       throw new UnauthorizedException('Invalide Refresh Token');
     const refreshTokenMatches = await argon2.verify(
