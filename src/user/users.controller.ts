@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Put,
   Req,
@@ -74,6 +76,25 @@ export class UsersController {
     return this.usersService.updateProfile(req.user.id, updateUserDto);
   }
 
-  //TODO : PUT METHOD
-  //TODO : DELETE METHOD
+  @HttpCode(HttpStatus.ACCEPTED)
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id')
+  async softDelete(@Param('id') id: number): Promise<void> {
+    try {
+      await this.usersService.deleteUser(id);
+    } catch (error) {
+      throw new HttpException('Error deleting user', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('restore/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  async restore(@Param('id') id: number): Promise<void> {
+    try {
+      await this.usersService.restore(id);
+    } catch (error) {
+      throw new HttpException('Error restoring user', HttpStatus.BAD_REQUEST);
+    }
+  }
 }

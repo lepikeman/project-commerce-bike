@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Order } from './order.entity';
 
 @Entity('tb_users')
@@ -17,6 +23,9 @@ export class User {
 
   @Column({ unique: true })
   email_user: string;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];

@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Not, Repository } from 'typeorm';
@@ -14,6 +15,8 @@ import { UpdateUserDto } from './dto-users/update-user.dto';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
@@ -174,6 +177,49 @@ export class UsersService {
       throw new BadRequestException(
         'Erreur lors de la mise à jour: ' + error.message,
       );
+    }
+  }
+
+  async deleteUser(userId: number) {
+    try {
+      const entity = await this.userRepository.findOne({
+        where: { id: userId },
+        withDeleted: true,
+      });
+
+      if (!entity) {
+        throw new HttpException(
+          `Entity with ${userId} not found`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      if (entity.deletedAt) {
+        throw new HttpException(
+          `Entity with ${userId} already deleted`,
+          HttpStatus.CONFLICT,
+        );
+      }
+
+      const result = await this.userRepository.softDelete(userId);
+      if (result.affected === 0) {
+        throw new Error(`error when deleting entity with id ${userId}`);
+      }
+
+      this.logger.log(`Entity with id ${userId} deleted successfully`);
+    } catch (error) {
+      this.logger.log(`Error deleting entity with id ${userId}`);
+    }
+  }
+
+  async restore(userId: number): Promise<void> {
+    try {
+      const result = await this.userRepository.restore(userId);
+      if (result.affected === 0) {
+        throw new Error(`error when restoring entity with id ${userId}`);
+      }
+      this.logger.log(`Entity with id ${userId} restored successfully`);
+    } catch (error) {
+      this.logger.log(`Error restoring entity with id ${userId}`);
     }
   }
 }
