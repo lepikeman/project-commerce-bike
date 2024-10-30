@@ -1,5 +1,6 @@
 import {
   Column,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -21,6 +22,12 @@ export class Order {
 
   @Column()
   product_id: number;
+
+  @Column({ nullable: true })
+  delivered: boolean;
+
+  @DeleteDateColumn({ nullable: true })
+  deleteAt: Date;
 
   @ManyToOne(() => User, (user) => user.orders)
   @JoinColumn({ name: 'user_id' })
