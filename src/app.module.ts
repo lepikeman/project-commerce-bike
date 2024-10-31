@@ -7,6 +7,8 @@ import { UsersModule } from './user/users.module';
 import { AuthModule } from './auth/auth.module';
 import { OrderModule } from './order/order.module';
 import { pgConfig } from './pgConfig';
+import { StripeService } from './stripe/stripe.service';
+import { StripeController } from './stripe/stripe.controller';
 
 dotenv.config();
 
@@ -18,6 +20,8 @@ dotenv.config();
     AuthModule,
     OrderModule,
   ],
+  providers: [StripeService],
+  controllers: [StripeController],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
