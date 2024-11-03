@@ -14,11 +14,11 @@ dotenv.config();
 @Module({
   imports: [
     TypeOrmModule.forRoot(pgConfig),
+    StripeModule,
     ProductModule,
     UsersModule,
     AuthModule,
     OrderModule,
-    StripeModule,
   ],
 })
 export class AppModule {

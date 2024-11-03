@@ -5,6 +5,7 @@ import { OrderService } from '../order/order.service';
 
 @Injectable()
 export class StripeService {
+  private Stripe = require('stripe');
   private stripe: Stripe;
 
   constructor(
@@ -13,7 +14,7 @@ export class StripeService {
   ) {
     this.stripe = new Stripe(
       this.configService.get<string>('STRIPE_SECRET_KEY'),
-      { apiVersion: '2024-09-30.acacia' },
+      { apiVersion: '2024-10-28.acacia' },
     );
   }
 
