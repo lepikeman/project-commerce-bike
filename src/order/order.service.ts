@@ -29,6 +29,10 @@ export class OrderService {
       .getRawMany();
   }
 
+  async saveOrder(orderId: number, orderData) {
+    const order = this.orderRepository.create(orderData);
+    return this.orderRepository.save(order);
+  }
   async updateOrder(orderId: number, updateOrderDto: UpdateOrderDto) {
     const order = await this.orderRepository.findOne({
       where: {

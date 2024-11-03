@@ -1,12 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
+import { OrderService } from '../order/order.service';
 
 @Injectable()
 export class StripeService {
   private stripe: Stripe;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private orderService: OrderService,
+  ) {
     this.stripe = new Stripe(
       this.configService.get<string>('STRIPE_SECRET_KEY'),
       { apiVersion: '2024-09-30.acacia' },
@@ -23,9 +27,10 @@ export class StripeService {
     customerEmail: string;
   }) {
     try {
+      const currency = this.configService.get<string>('CURRENCY', 'EUR');
       const lineItems = paymentData.items.map((item) => ({
         price_data: {
-          currency: 'EUR',
+          currency,
           product_data: {
             name: item.name,
           },
@@ -33,9 +38,12 @@ export class StripeService {
         },
         quantity: item.quantity,
       }));
-
+      const paymentMethod = this.configService.get<any>(
+        'PAYMENT_METHOD_TYPES',
+        'card',
+      );
       const session = await this.stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
+        payment_method_types: paymentMethod,
         line_items: lineItems,
         mode: 'payment',
         success_url: `${this.configService.get('FRONTEND_URL')}/success?session_id={CHECKOUT_SESSION_ID}`,
@@ -102,7 +110,29 @@ export class StripeService {
       }
       return { received: true };
     } catch (error) {
+      console.error('Webhook handling error:', error);
       throw new BadRequestException(`Webhook Error: ${error.message}`);
+    }
+  }
+
+  async fulfillOrder(session: Stripe.Checkout.Session) {
+    try {
+      const paymentResult = await this.verifyPayment(session.id);
+      if (paymentResult.success) {
+        const orderData = {
+          sessionId: paymentResult.orderId,
+          customer_email: paymentResult.customerEmail,
+          amount: paymentResult.totalAmount,
+          items: paymentResult.items,
+        };
+        const id = parseInt(session.id);
+        await this.orderService.saveOrder(id, orderData);
+        console.log('Order successfully completed', session.id);
+      }
+    } catch (error) {
+      throw new BadRequestException(
+        `Error with validate payment: ${error.message}`,
+      );
     }
   }
 }
