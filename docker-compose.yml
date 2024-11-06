@@ -1,0 +1,32 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .  # This will use the Dockerfile in the current directory
+    ports:
+      - "3000:3000"  # Map container port to host port
+    depends_on:
+      - db  # Ensure the database starts before the app
+    environment:
+      # Database connection environment variables
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: 140815
+      DB_NAME: db_ecommerce_bike
+    command: npm run start:prod  # Override the CMD in Dockerfile if needed
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 140815
+      POSTGRES_DB: PostgreSQL15
+    ports:
+      - "5433:5432"  # Map PostgreSQL port to host port for local access
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Persist data
+      - ./exportBddBikeShop.sql:/docker-entrypoint-initdb/exportBddBikeShop.sql
+
+volumes:
+  pgdata:
