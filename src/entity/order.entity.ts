@@ -26,6 +26,9 @@ export class Order {
   @Column({ nullable: true })
   delivered: boolean;
 
+  @Column()
+  paid: boolean;
+
   @DeleteDateColumn({ nullable: true })
   deleteAt: Date;
 

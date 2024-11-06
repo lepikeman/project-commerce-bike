@@ -14,19 +14,18 @@ services:
       DB_USER: postgres
       DB_PASSWORD: 140815
       DB_NAME: db_ecommerce_bike
-    command: npm run start:prod  # Override the CMD in Dockerfile if needed
+    command: sh -c "npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts && npm run start:prod"  # Override the CMD in Dockerfile if needed
 
   db:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 140815
-      POSTGRES_DB: PostgreSQL15
+      POSTGRES_DB: db_ecommerce_bike
     ports:
       - "5433:5432"  # Map PostgreSQL port to host port for local access
     volumes:
       - pgdata:/var/lib/postgresql/data  # Persist data
-      - ./exportBddBikeShop.sql:/docker-entrypoint-initdb/exportBddBikeShop.sql
 
 volumes:
   pgdata:
