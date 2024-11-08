@@ -8,7 +8,7 @@ export class InitialMigration1730910535273 implements MigrationInterface {
           username VARCHAR(100) NOT NULL,
           password VARCHAR(100) NOT NULL,
           email_user VARCHAR(100) NOT NULL,
-          hashedRefreshToken VARCHAR(100),
+          hashed_refresh_token VARCHAR(100),
           deletedAt DATE,
       );
       CREATE TABLE tb_products (

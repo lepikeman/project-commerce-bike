@@ -19,7 +19,7 @@ export class User {
   password: string;
 
   @Column({ nullable: true })
-  hashedRefreshToken: string;
+  hashed_refresh_token: string;
 
   @Column({ unique: true })
   email_user: string;
