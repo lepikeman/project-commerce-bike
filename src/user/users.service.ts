@@ -21,10 +21,10 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async updateHashedRefreshToken(userId: number, hashedRefreshToken: string) {
+  async updateHashedRefreshToken(userId: number, hashed_refresh_token: string) {
     return await this.userRepository.update(
       { id: userId },
-      { hashedRefreshToken },
+      { hashed_refresh_token: hashed_refresh_token },
     );
   }
 
@@ -48,7 +48,7 @@ export class UsersService {
     try {
       return this.userRepository.findOne({
         where: { id },
-        select: ['username', 'email_user', 'id', 'hashedRefreshToken'],
+        select: ['username', 'email_user', 'id', 'hashed_refresh_token'],
       });
     } catch (error) {
       throw new Error(error);

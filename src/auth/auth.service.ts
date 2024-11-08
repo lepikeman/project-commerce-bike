@@ -30,10 +30,10 @@ export class AuthService {
 
   async login(userId: number) {
     const { accessToken, refreshToken } = await this.generateUserTokens(userId);
-    const hashedRefreshToken = await argon2.hash(refreshToken);
+    const hashed_refresh_token = await argon2.hash(refreshToken);
     await this.usersService.updateHashedRefreshToken(
       userId,
-      hashedRefreshToken,
+      hashed_refresh_token,
     );
     return {
       userId,
@@ -53,10 +53,10 @@ export class AuthService {
 
   async refreshToken(userId: number) {
     const { accessToken, refreshToken } = await this.generateUserTokens(userId);
-    const hashedRefreshToken = await argon2.hash(refreshToken);
+    const hashed_refresh_token = await argon2.hash(refreshToken);
     await this.usersService.updateHashedRefreshToken(
       userId,
-      hashedRefreshToken,
+      hashed_refresh_token,
     );
     return {
       id: userId,
@@ -72,10 +72,10 @@ export class AuthService {
 
   async validateRefreshToken(userId: number, refreshToken: string) {
     const user = this.usersService.findById(userId);
-    if (!user || !(await user).hashedRefreshToken)
+    if (!user || !(await user).hashed_refresh_token)
       throw new UnauthorizedException('Invalide Refresh Token');
     const refreshTokenMatches = await argon2.verify(
-      (await user).hashedRefreshToken,
+      (await user).hashed_refresh_token,
       refreshToken,
     );
 
