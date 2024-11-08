@@ -9,7 +9,7 @@ export class InitialMigration1730910535273 implements MigrationInterface {
           password VARCHAR(100) NOT NULL,
           email_user VARCHAR(100) NOT NULL,
           hashedRefreshToken VARCHAR(100),
-          deletedAt DATE
+          deletedAt DATE,
       );
       CREATE TABLE tb_products (
           id SERIAL PRIMARY KEY,
@@ -23,10 +23,11 @@ export class InitialMigration1730910535273 implements MigrationInterface {
           user_id INT REFERENCES tb_users(id),
           product_id INT REFERENCES tb_products(id),
           delivered BOOLEAN NOT NULL,
-          deletedAt DATE
-          order_date DATE
+          deletedAt DATE,
+          order_date DATE,
           paid BOOLEAN NOT NULL,
-      );git 
+          
+      );
     `);
   }
 
