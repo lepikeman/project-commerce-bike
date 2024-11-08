@@ -9,14 +9,14 @@ export class InitialMigration1730910535273 implements MigrationInterface {
           password VARCHAR(100) NOT NULL,
           email_user VARCHAR(100) NOT NULL,
           hashed_refresh_token VARCHAR(100),
-          deletedAt DATE,
+          deletedAt DATE
       );
       CREATE TABLE tb_products (
           id SERIAL PRIMARY KEY,
           product_name VARCHAR(100) NOT NULL,
           price NUMERIC NOT NULL,
           description VARCHAR(255) NOT NULL,
-          factorynew BOOLEAN NOT NULL,
+          factorynew BOOLEAN NOT NULL
       );
       CREATE TABLE tb_orders (
           id SERIAL PRIMARY KEY,
@@ -25,7 +25,7 @@ export class InitialMigration1730910535273 implements MigrationInterface {
           delivered BOOLEAN NOT NULL,
           deletedAt DATE,
           order_date DATE,
-          paid BOOLEAN NOT NULL,
+          paid BOOLEAN NOT NULL
           
       );
     `);
