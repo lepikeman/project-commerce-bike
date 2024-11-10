@@ -193,7 +193,7 @@ export class UsersService {
           HttpStatus.NOT_FOUND,
         );
       }
-      if (entity.deletedAt) {
+      if (entity.deleted_at) {
         throw new HttpException(
           `Entity with ${userId} already deleted`,
           HttpStatus.CONFLICT,
