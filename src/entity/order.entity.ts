@@ -30,7 +30,7 @@ export class Order {
   paid: boolean;
 
   @DeleteDateColumn({ nullable: true })
-  delete_at: Date;
+  deleted_at: Date;
 
   @ManyToOne(() => User, (user) => user.orders)
   @JoinColumn({ name: 'user_id' })
