@@ -23,7 +23,7 @@ export class InitialMigration1730910535273 implements MigrationInterface {
           user_id INT REFERENCES tb_users(id),
           product_id INT REFERENCES tb_products(id),
           delivered BOOLEAN NOT NULL,
-          deletedAt DATE,
+          deleted_at DATE,
           order_date DATE,
           paid BOOLEAN NOT NULL
           
