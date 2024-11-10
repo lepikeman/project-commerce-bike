@@ -25,7 +25,7 @@ export class User {
   email_user: string;
 
   @DeleteDateColumn()
-  deletedAt: Date;
+  deleted_at: Date;
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
