@@ -1,4 +1,10 @@
-import { IsBoolean, IsNotEmpty, IsString, Length, MaxLength } from "class-validator";
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsString,
+  Length,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -7,10 +13,14 @@ export class CreateProductDto {
   product_name: string;
 
   @IsBoolean()
-  factorynew: boolean
+  factorynew: boolean;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
   description: string;
+
+  @IsString()
+  @IsNotEmpty()
+  price: string;
 }
