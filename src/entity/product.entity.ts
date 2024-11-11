@@ -16,7 +16,7 @@ export class Product {
   description: string;
 
   @Column()
-  price: string;
+  price: number;
 
   @OneToMany(() => Order, (order) => order.product)
   orders: Order[];
